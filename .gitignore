@@ -1,25 +1,19 @@
-
-# Sensitive Data & Credentials
-file.xlsx
-remittance.json
-users.json
-smeLoan.json
-transfers.json
-passwords.txt
-credentials.yml
+venv/
 *.pyc
 __pycache__/
-
-# Environments
-venv/
+.pytest_cache/
+.idea/
+.DS_Store
+logs/
+screenshots/
 env/
 .env
 .venv/
+reports/
 
-# IDE Settings (Optional but recommended)
-.vscode/
-.idea/
-
-# Selenium / Log files
-*.log
-ghostdriver.logvenv/
+# Sensitive Data & Credentials
+data/file.xlsx
+data/remittance.json
+data/users.json
+data/smeLoan.json
+data/transfers.json
