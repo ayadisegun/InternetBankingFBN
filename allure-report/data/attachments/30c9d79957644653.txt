@@ -1,0 +1,1 @@
+INFO     pytest_logger:test_firstonline.py:116 SANNI ABDULLAH OLUWATOSIN

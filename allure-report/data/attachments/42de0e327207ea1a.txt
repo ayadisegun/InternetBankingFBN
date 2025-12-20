@@ -1,0 +1,2 @@
+Loading JSON test data from: /Users/mac/Desktop/PycharmProjects/InternetBanking/test_file/test_data.json
+Running tests on browser: chrome

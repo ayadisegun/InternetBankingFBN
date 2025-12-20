@@ -1,0 +1,34 @@
+{
+  "remittance": {
+    "account_number": "",
+    "incomplete_account_number": "",
+    "recipient_name": "",
+    "sender_amount": "",
+    "invalid_amount": "",
+    "narration": "Raptures Automation test",
+    "token": "",
+    "invalid_token": "",
+    "searchBiller_type": "",
+    "search_airline": "",
+    "customer_Id": "",
+    "billers_name": "Test User",
+    "country": "",
+    "bank": "",
+    "phone_number": ""
+  },
+  "other": {
+    "account_number": "",
+    "recipient_name": " ",
+    "amount": "",
+    "narration": "Raptures Automation test",
+    "token": "",
+    "searchBiller_type": "",
+    "search_airline": "",
+    "customer_Id": "",
+    "billers_name": "Test User",
+    "country": "",
+    "bank": "",
+    "phone_number": ""
+  }
+}
+

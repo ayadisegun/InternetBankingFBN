@@ -1,0 +1,1 @@
+2025-12-02 19:22:04,670 : INFO : pytest_logger : Answering security question: 'What is your favourite city?'
