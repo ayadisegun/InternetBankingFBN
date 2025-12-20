@@ -1,1 +1,0 @@
-[32mINFO    [0m pytest_logger:test_firstonline.py:91 Answering security question: 'What is your favourite city?'

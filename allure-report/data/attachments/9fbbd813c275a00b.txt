@@ -1,1 +1,0 @@
-[32mINFO    [0m pytest_logger:test_firstonline.py:59 Welcome to FirstOnline
