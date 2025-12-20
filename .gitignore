@@ -17,3 +17,5 @@ data/remittance.json
 data/users.json
 data/smeLoan.json
 data/transfers.json
+allure-report/
+allure-results/
