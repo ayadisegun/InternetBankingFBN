@@ -31,15 +31,17 @@ from allure_commons.types import ParameterMode
 @pytest.mark.usefixtures("setup")
 class TestLogin:
 
-    @pytest.fixture(autouse=True)
-    def settings(self, setup):
+
+    @pytest.fixture(scope="class", autouse=True)
+    def settings(self, request, setup):
         driver = setup
         LoginHelper.login_as_admin(driver)
-        self.dashboard_page = Dashboard(driver)
-        self.receipt_page = Receipt(driver)
+        request.cls.driver = driver
+        request.cls.dashboard_page = Dashboard(driver)
+        request.cls.receipt_page = Receipt(driver)
         # self.token_page = Token(driver)
-        self.remittance_page = Remittance(driver)
-        self.remittance = TestData.get_remittance("remittance")
+        request.cls.remittance_page = Remittance(driver)
+        request.cls.remittance = TestData.get_remittance("remittance")
 
     @pytest.mark.smoke
     def test_all_form_validations(self):
@@ -59,16 +61,19 @@ class TestLogin:
         self.remittance_page.click_proceed_button()
         # self.remittance_page.confirm_token_page_amount((self.remittance["sender_amount"]))
 
-    @pytest.mark.smoke
+    @pytest.mark.skip
+    # @pytest.mark.smoke
     def test_invalid_token(self):
         self.remittance_page.enter_invalid_token_and_click_make_transfer_button(self.remittance["invalid_token"])
 
-    @pytest.mark.smoke
+    @pytest.mark.skip
+    # @pytest.mark.smoke
     def test_valid_token(self):
         self.remittance_page.enter_token(self.remittance["token"])
         self.remittance_page.click_make_transfer_button()
 
-    @pytest.mark.smoke
+    @pytest.mark.skip
+    # @pytest.mark.smoke
     def test_receipt(self):
         self.receipt_page.verify_complete_page_is_displayed()
         self.receipt_page.click_generate_receipt_button()

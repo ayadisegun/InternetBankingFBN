@@ -18,7 +18,7 @@ import allure
 from pages.login_page import LoginPage
 from pages.dashboard_page import Dashboard
 from pages.security_question_page import SecurityQuestion
-from Utilities.conftest import readconfig, set_data, read_data
+# from Utilities.conftest import readconfig, set_data, read_data
 from base.baseClass import BaseUtils
 from Utilities.test_data import TestData
 from allure_commons.types import ParameterMode
@@ -32,9 +32,8 @@ from allure_commons.types import ParameterMode
 class TestLogin:
 
     @pytest.fixture(autouse=True)
-    def pages(self, setup):
+    def settings(self, setup):
         driver = setup
-        # self.driver = driver
         self.login_page = LoginPage(driver)
         self.security_question_page = SecurityQuestion(driver)
         self.dashboard_page = Dashboard(driver)

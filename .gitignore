@@ -5,17 +5,22 @@ __pycache__/
 .idea/
 .DS_Store
 logs/
+log/
+local.log
 screenshots/
 env/
 .env
 .venv/
 reports/
+reports_downloads
 
 # Sensitive Data & Credentials
 data/file.xlsx
 data/remittance.json
 data/users.json
 data/smeLoan.json
+data/airtimeData.json
 data/transfers.json
 allure-report/
 allure-results/
+browserstack.yml

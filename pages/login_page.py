@@ -121,8 +121,8 @@ class LoginPage(BaseUtils):
         forgot_password = ForgotPassword(self.driver)
         return forgot_password
 
-    def register_button(self):
-        return self.driver.find_element(*LoginPage.register)
+    def click_register_link(self):
+        self.click(self.register)
 
     def login_button(self):
         self.driver.find_element(*LoginPage.log_but).click()  # the * is to de-serialise the shop variable in a python

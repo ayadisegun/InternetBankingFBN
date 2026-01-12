@@ -6,12 +6,19 @@ class TestData:
     _transfers = None
     _remittance = None
     _smeLoan = None
+    _airtimeData = None
 
     @classmethod
     def users(cls):
         if cls._users is None:
             cls._users = load_json("users.json")
         return cls._users
+
+    @classmethod
+    def airtime_data(cls):
+        if cls._airtimeData is None:
+            cls._airtimeData = load_json("airtimeData.json")
+        return cls._airtimeData
 
     @classmethod
     def transfers(cls):
@@ -33,13 +40,20 @@ class TestData:
         return users[role]
 
     @classmethod
-    def get_transfer(cls, transfer_type: str, scenario: str):
+    def get_airtime_data(cls, role: str):
+        airtime_Data = cls.airtime_data()
+        if role not in airtime_Data:
+            raise ValueError(f"User role '{role}' not found in users.json")
+        return airtime_Data[role]
+
+    @classmethod
+    def get_transfer(cls, transfer_type: str):
         transfers = cls.transfers()
         if transfer_type not in transfers:
             raise ValueError(f"Transfer type '{transfer_type}' not found in transfers.json")
-        if scenario not in transfers[transfer_type]:
-            raise ValueError(f"Scenario '{scenario}' not found under '{transfer_type}' in transfers.json")
-        return transfers[transfer_type][scenario]
+        # if scenario not in transfers[transfer_type]:
+        #     raise ValueError(f"Scenario '{scenario}' not found under '{transfer_type}' in transfers.json")
+        return transfers[transfer_type]
 
     @classmethod
     def get_remittance(cls, bill_type: str):

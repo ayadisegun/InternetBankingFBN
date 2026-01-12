@@ -26,76 +26,22 @@ class BaseUtils:
         self.driver = driver
         self.wait = WebDriverWait(driver, 20)
 
-    def get_screenshot(self, filename: str):
-        screenshot_dir = readconfig("setup", "screenshot_dir")
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        path = os.path.join(screenshot_dir, f"{filename}_{timestamp}.png")
-        self.driver.get_screenshot_as_file(path)
 
-    def scroll_to_element(self, element):
-        """Scroll to a specific element"""
-        self.driver.execute_script("arguments[0].scrollIntoView(true);", element)
+    @staticmethod
+    def wait_for_seconds(seconds: int):
+        time.sleep(seconds)
 
-    def scroll_to_view(self, element):
-        self.driver.execute_script("arguments[0].scrollIntoView({ behavior: 'smooth', block: 'center' });", element)
+    def type_and_blur(self, locator: tuple, text: str):
+        element = self.find_element(locator)
+        element.clear()
+        element.send_keys(text)
+        self.driver.execute_script("arguments[0].blur();", element)
 
-    def scroll_to_bottom(self):
-        """Scroll to bottom of page"""
-        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    def browser_back(self):
+        self.driver.back()
 
-    def scroll_down(self):
-        """Scroll by specific pixel amount"""
-        self.driver.execute_script("window.scrollBy(0, 300);")
-
-    def scroll_to_top(self):
-        """Scroll to top of page"""
-        self.driver.execute_script("window.scrollTo(0, 0);")
-
-    def scroll_by_pixels(self, x=0, y=800):
-        """Scroll by specific pixel amount"""
-        self.driver.execute_script(f"window.scrollBy({x}, {y});")
-
-    def scroll_to_element_by_pixel(self, element):
-        self.driver.execute_script("arguments[0].scrollTop += 600;", element)
-
-    def wait_and_click(self, locator, timeout=10):
-        """Wait for element and click"""
-        element = WebDriverWait(self.driver, timeout).until(
-            EC.element_to_be_clickable(locator)
-        )
-        element.click()
-        return element
-
-    def wait_until_present(self, locator):
-        mywait = WebDriverWait(self.driver, 10)
-        mywait.until(EC.presence_of_element_located(locator))
-
-    # def hover_over_element(self, element):
-    #     """Hover over an element"""
-    #     ActionChains(self.driver).move_to_element(element).perform()
-
-    def selectoption_bytext(self, locator, text):
-        driver = self.driver
-        optns = Select(driver.find_element(locator))
-        optns.select_by_visible_text(text)
-
-    def mouse_over(self, element):
-        ele = self.driver.find_element(element)
-        ActionChains(self.driver).move_to_element(ele).perform()
-
-    def double_click(self, element):
-        actions = ActionChains(self.driver)
-        actions.double_click(element).perform()
-
-    def delete_cookie(self):
-        self.driver.delete_all_cookies()
-
-    def delete_session(self):
-        self.driver.execute_script("window.sessionStorage.clear();")
-
-    def delete_localstorage(self):
-        self.driver.execute_script("window.localStorage.clear();")
-
+    def reload_page(self):
+        self.driver.refresh()
 
     def find_element(self, locator: tuple):
         return self.wait.until(EC.presence_of_element_located(locator))
@@ -116,6 +62,9 @@ class BaseUtils:
 
     def text_of_element(self, locator: tuple) -> str:
         return self.find_element(locator).text.strip()
+
+    def get_text(self, locator):
+        return self.wait.until(EC.visibility_of_element_located(locator)).text.strip()
 
     def is_visible(self, locator: tuple) -> bool:
         try:
@@ -139,6 +88,28 @@ class BaseUtils:
             return self.driver.execute_script("return arguments[0].innerText;", element).strip()
         except Exception:
             return ""
+
+
+
+    def wait_for_result(self, locator: tuple, locator2: tuple):
+        # Wait up to 15 seconds for EITHER the amount OR the error to appear
+        wait = WebDriverWait(self.driver, 30)
+        try:
+            # This waits until one of the two elements is present in the DOM
+            result = wait.until(
+                lambda driver: self.driver.find_element(*locator) or
+                               self.driver.find_elements(*locator2)
+            )
+            # Check which one we found
+            if self.driver.find_elements(*locator2):
+                error_text = self.driver.find_element(*locator2).text
+                pytest.fail(f"Conversion failed with error: {error_text}")
+            else:
+                print("Conversion successful!")
+                return True
+
+        except TimeoutException:
+            pytest.fail("System timed out waiting for conversion result.")
 
     def convert_to_float(self, text):
         # Removes everything except digits and decimal points
@@ -218,6 +189,76 @@ class BaseUtils:
                 return element.get_attribute(state) is not None
         except TimeoutException:
             return False
+
+    def get_screenshot(self, filename: str):
+        screenshot_dir = readconfig("setup", "screenshot_dir")
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        path = os.path.join(screenshot_dir, f"{filename}_{timestamp}.png")
+        self.driver.get_screenshot_as_file(path)
+
+    def scroll_to_element(self, locator):
+        el = self.wait.until(EC.presence_of_element_located(locator))
+        self.driver.execute_script("arguments[0].scrollIntoView(true);", el)
+
+    def scroll_to_view(self, element):
+        self.driver.execute_script("arguments[0].scrollIntoView({ behavior: 'smooth', block: 'center' });", element)
+
+    def scroll_to_bottom(self):
+        """Scroll to bottom of page"""
+        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+    def scroll_down(self):
+        """Scroll by specific pixel amount"""
+        self.driver.execute_script("window.scrollBy(0, 300);")
+
+    def scroll_to_top(self):
+        """Scroll to top of page"""
+        self.driver.execute_script("window.scrollTo(0, 0);")
+
+    def scroll_by_pixels(self, x=0, y=800):
+        """Scroll by specific pixel amount"""
+        self.driver.execute_script(f"window.scrollBy({x}, {y});")
+
+    def scroll_to_element_by_pixel(self, element):
+        self.driver.execute_script("arguments[0].scrollTop += 600;", element)
+
+    def wait_and_click(self, locator, timeout=20):
+        """Wait for element and click"""
+        element = WebDriverWait(self.driver, timeout).until(
+            EC.element_to_be_clickable(locator)
+        )
+        element.click()
+        return element
+
+    def wait_until_present(self, locator):
+        mywait = WebDriverWait(self.driver, 20)
+        mywait.until(EC.presence_of_element_located(locator))
+
+    # def hover_over_element(self, element):
+    #     """Hover over an element"""
+    #     ActionChains(self.driver).move_to_element(element).perform()
+
+    def selectoption_bytext(self, locator, text):
+        driver = self.driver
+        optns = Select(driver.find_element(locator))
+        optns.select_by_visible_text(text)
+
+    def mouse_over(self, element):
+        ele = self.driver.find_element(element)
+        ActionChains(self.driver).move_to_element(ele).perform()
+
+    def double_click(self, element):
+        actions = ActionChains(self.driver)
+        actions.double_click(element).perform()
+
+    def delete_cookie(self):
+        self.driver.delete_all_cookies()
+
+    def delete_session(self):
+        self.driver.execute_script("window.sessionStorage.clear();")
+
+    def delete_localstorage(self):
+        self.driver.execute_script("window.localStorage.clear();")
 
 
 

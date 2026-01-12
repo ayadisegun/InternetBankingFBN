@@ -27,6 +27,7 @@ import allure
 import json
 from Utilities.configReader import readconfig
 from Utilities.config import Config
+from selenium.webdriver.chrome.options import Options as ChromeOptions
 
 
 # conftest_dir = os.path.dirname(os.path.abspath(__file__))
@@ -77,6 +78,15 @@ def setup(request):
 
     # --------------
     browser_name = request.config.getoption("browser_name")
+    # browserstack setup added
+    # desired_cap = {
+    #     'browser': 'chrome',
+    #     'browser_version': 'latest',
+    #     'os': 'OS X',
+    #     'os_version': 'Ventura',
+    #     'name': 'Sample Test',  # test name
+    #     'build': 'Build 1'  # build name
+    # }
     if browser_name == "chrome":
         ops = webdriver.ChromeOptions()
         ops.add_argument("--ignore-certificate-errors")
@@ -85,6 +95,7 @@ def setup(request):
         ops.add_experimental_option("prefs", preferences)
         # ops.add_argument("headless") # to run driver in headless mode
         driver = webdriver.Chrome(options=ops)
+
     elif browser_name == "edge":
         ops = webdriver.EdgeOptions()
         ops.add_argument("--ignore-certificate-errors")
@@ -107,13 +118,40 @@ def setup(request):
         driver = webdriver.Firefox(options=ops)
     else:
         raise ValueError(f"Unsupported browser: {browser_name}. Please choose 'chrome', 'firefox', or 'edge'.")
+    # driver = webdriver.Remote(
+    #     command_executor='https://segunayadi_LN3I5e:KFvT3YB5hA9hLAipsqpM@hub.browserstack.com/wd/hub',
+    #     desired_capabilities=desired_cap
+    # )  # comment out this driver = webdriver.remote and desired caps if you want to run local
+    # driver.implicitly_wait(20)
+    driver.get(readconfig("setup", "firstonline_url"))
     driver.implicitly_wait(20)
-    # driver.get(readconfig("setup", "firstonline_url"))
-    driver.get(Config.get("url"))
+    # driver.get(Config.get("url"))
     request.cls.driver = driver
     yield driver
     print(f"Quitting {browser_name} browser.")
     driver.close()
+    driver.quit()
+
+
+@pytest.fixture(scope="class")
+def setup1(request):
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    options = ChromeOptions()
+    options.browser_version = 'latest'
+    options.platform_name = 'Windows 11'
+    sauce_options = {}
+    sauce_options['username'] = 'Segun_Ayadi'
+    sauce_options['accessKey'] = '7235ab48-4091-42db-a731-5f81ec700dcb'
+    sauce_options['build'] = f'InternetBanking_{timestamp}'
+    sauce_options['name'] = 'InitialSaucelabstest'
+    options.set_capability('sauce:options', sauce_options)
+    url = "https://ondemand.eu-central-1.saucelabs.com:443/wd/hub"
+    driver = webdriver.Remote(command_executor=url, options=options)
+    driver.implicitly_wait(20)
+    # run commands and assertions
+    driver.get(readconfig("setup", "firstonline_url"))
+    request.cls.driver = driver
+    yield driver
     driver.quit()
 
 def send_mail(sender_address, sender_pass, receiver_address, subject, mail_content, attach_file_name,

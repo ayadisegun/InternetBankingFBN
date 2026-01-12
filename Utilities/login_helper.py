@@ -1,5 +1,6 @@
 # from utilities.config import Config
 from pages.login_page import LoginPage
+from pages.dashboard_page import Dashboard
 from pages.security_question_page import SecurityQuestion
 from Utilities.test_data import TestData
 
@@ -19,7 +20,7 @@ class LoginHelper:
         security_question_page.verify_security_page_access_message_is_displayed()
         security_question_page.answer_security_question()
         security_question_page.click_proceed_button()
-        return login_page  # i think it should return dashboard page
+        return Dashboard(driver)  # i think it should return dashboard page
 
     @staticmethod
     def login_as_admin(driver):

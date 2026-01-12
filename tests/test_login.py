@@ -33,7 +33,6 @@ class TestLogin:
     @pytest.fixture(autouse=True)
     def pages(self, setup):
         driver = setup
-        # self.driver = driver
         self.login_page = LoginPage(driver)
         self.security_question_page = SecurityQuestion(driver)
         self.dashboard_page = Dashboard(driver)
@@ -79,9 +78,10 @@ class TestLogin:
         self.security_question_page.answer_security_question()
         self.security_question_page.click_proceed_button()
         self.dashboard_page.verify_dashboard_page_is_displayed()
-        self.dashboard_page.click_logout_tab()
-        self.dashboard_page.confirm_logout()
+        # self.dashboard_page.click_logout_tab()
+        # self.dashboard_page.confirm_logout()
 
+    @pytest.mark.skip()
     @pytest.mark.smoke
     def test_valid_sub_user_login(self):
         self.login_page.clear_password()

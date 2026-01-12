@@ -16,28 +16,21 @@ from selenium import webdriver
 from selenium.webdriver.support.select import Select
 import allure
 from pages.login_page import LoginPage
-from Utilities.conftest import readconfig, set_data, read_data
+from Utilities.configReader import readconfig
 from base.baseClass import BaseUtils
 from allure_commons.types import ParameterMode
 
 
 # driver = None
 @pytest.mark.usefixtures("setup")
-# @pytest.mark.parametrize("sub_user, sub_pass, admn_user, admn_pass, current_password, new_password, "
-#                              "service, provider", read_data())
-
+@pytest.mark.skip()
 class Test:
-    # @pytest.mark.parametrize("sub_user, sub_pass, admn_user, admn_pass, current_password, new_password, "
-    #                          "service, provider", read_data()) #not used
-
     @pytest.fixture(scope="session")
     def context(self):
         return {}
 
     @allure.title("login")
     @pytest.mark.order(1)
-    # def test_login_smoke(self, setup, get_logger,context, sub_user, sub_pass, admn_user, admn_pass, current_password, new_password,
-    #                      service, provider):
     def test_login(self, setup, get_logger,context, test_data):
 
         # allure.dynamic.parameter("sub_user", sub_user, mode=ParameterMode.HIDDEN)

@@ -77,6 +77,6 @@ class SecurityQuestion(BaseUtils):
             logger.info(f"Answering security question: '{security_question_text}'")
             self.enter_security_answer(answer)
         else:
-            utils.get_screenshot("unknown_security_question")
+            self.get_screenshot("unknown_security_question")
             logger.warning(f"Unknown security question: '{security_question_text}'")
 

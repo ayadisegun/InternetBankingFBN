@@ -33,6 +33,28 @@ class Remittance(BaseUtils):
     tokenbox = (By.XPATH, "//input[@id='token-input-0']")
     maketransferbutton = (By.XPATH, "//button[normalize-space()='Make Transfer']")
     invalid_token_error = (By.XPATH, "//*[contains(text(),'Invalid Token')]")
+    CHARGES_ERROR_SELECTOR = (By.XPATH, readconfig("Remittance_page", "error_text"))  # The error alert
+
+    def wait_for_conversion_result(self):
+        return self.wait_for_result(Remittance.principal_amount, Remittance.CHARGES_ERROR_SELECTOR)
+        # # Wait up to 15 seconds for EITHER the amount OR the error to appear
+        # wait = WebDriverWait(self.driver, 20)
+        # try:
+        #     # This waits until one of the two elements is present in the DOM
+        #     result = wait.until(
+        #         lambda driver: self.driver.find_element(Remittance.principal_amount) or
+        #                        self.driver.find_elements(Remittance.CHARGES_ERROR_SELECTOR)
+        #     )
+        #     # Check which one we found
+        #     if self.driver.find_elements(*Remittance.CHARGES_ERROR_SELECTOR):
+        #         error_text = self.driver.find_element(*Remittance.CHARGES_ERROR_SELECTOR).text
+        #         pytest.fail(f"Conversion failed with error: {error_text}")
+        #     else:
+        #         print("Conversion successful!")
+        #         return True
+        #
+        # except TimeoutException:
+        #     pytest.fail("System timed out waiting for conversion result.")
 
     def token_page_amount_text(self):
         logger.info(f"getting token page amount")
@@ -157,6 +179,7 @@ class Remittance(BaseUtils):
     def enter_sender_amount(self, sender_amount):
         sender_amount = self.driver.find_element(*Remittance.senderamount)
         sender_amount.click()
+        sender_amount.clear()
         sender_amount.send_keys(sender_amount)
         sender_amount.click()
 
@@ -268,11 +291,9 @@ class Remittance(BaseUtils):
         self.select_fetched_search_bank(bank)
         self.enter_recipients_account_number(account_number)
         self.driver.find_element(*Remittance.senderamount).send_keys(amount)
-        self.driver.find_element(*Remittance.recipientsamount).click()
-        self.driver.find_element(*Remittance.recipientsaccountNumber).click()
         self.verify_account_enquiry_name_is_displayed()
         self.enter_narration(narration)
-        self.click_recipients_amount()
+        self.wait_for_conversion_result()
         BaseUtils.scroll_to_bottom(self)
         self.compute_total_amount_payable()
 

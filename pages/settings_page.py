@@ -1,9 +1,10 @@
 from selenium.webdriver.common.by import By
 from Utilities.configReader import readconfig
+from base.baseClass import BaseUtils
 from Utilities.logger import get_logger
 
 
-class Settings:
+class Settings(BaseUtils):
 
     def __init__(self, driver):
         self.driver = driver
